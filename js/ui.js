@@ -68,7 +68,7 @@ function init() {
     });
   });
   document.querySelectorAll(".pieces > div").forEach((hand, playerIndex) => {
-    hand.querySelectorAll("div").forEach((piece, pieceIndex) => {
+    hand.querySelectorAll("div").forEach((piece) => {
       piece.addEventListener("click", ({ target }) => {
         const classes = target.classList;
         if (!classes.contains("big") && !classes.contains("little")) {
@@ -78,11 +78,11 @@ function init() {
           document.querySelector(".selected").classList.remove("selected");
         } else {
           document.querySelector(".container").classList.add("piece-selected");
-          if (classes.contains("little")) {
-            selectedPiece = playerIndex ? "t" : "o";
-          } else {
-            selectedPiece = playerIndex ? "T" : "O";
-          }
+        }
+        if (classes.contains("little")) {
+          selectedPiece = playerIndex ? "t" : "o";
+        } else {
+          selectedPiece = playerIndex ? "T" : "O";
         }
         target.classList.add("selected");
       });

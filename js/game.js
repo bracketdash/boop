@@ -41,7 +41,6 @@ class BoopGame {
     const pieceMap = ["o", "O", "t", "T"];
     next.pieces[pieceMap.indexOf(move[2])]--;
     next.board[move[0]][move[1]] = move[2];
-    // TODO: debug pushing logic
     const pushedCells = [
       [-1, -1],
       [-1, 0],
@@ -63,7 +62,7 @@ class BoopGame {
       ) {
         return;
       }
-      const targetCell = next.board[startingRow][startingRow];
+      const targetCell = next.board[startingRow][startingCell];
       if (
         targetCell === "e" ||
         !(
@@ -75,13 +74,14 @@ class BoopGame {
       ) {
         return;
       }
-      next.board[startingRow][startingRow] = "e";
       const endingRow = startingRow + rowDelta;
       const endingCell = startingCell + cellDelta;
       if (endingRow < 0 || endingRow > 5 || endingCell < 0 || endingCell > 5) {
+        next.board[startingRow][startingCell] = "e";
         next.pieces[pieceMap.indexOf(targetCell)]++;
-      } else {
-        next.board[startingRow][startingRow] = targetCell;
+      } else if (next.board[endingRow][endingCell] === "e") {
+        next.board[startingRow][startingCell] = "e";
+        next.board[endingRow][endingCell] = targetCell;
       }
     });
     const triplets = [
