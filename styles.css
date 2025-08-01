@@ -52,9 +52,9 @@ body {
 
 .row > div {
   background: #ddd;
+  border: 1px solid #ccc;
   height: 52px;
   width: 52px;
-  border: 1px solid #ccc;
 }
 
 .piece-selected .row > .empty {
@@ -72,13 +72,15 @@ body {
 .pieces {
   align-items: center;
   display: flex;
-  gap: 4px;
+  gap: 5px;
   justify-content: center;
+  margin-top: 20px;
 }
 
 .pieces > div {
   display: flex;
   flex-wrap: wrap;
+  gap: 6px;
 }
 
 .pieces > div:nth-child(1) {
@@ -94,23 +96,44 @@ body {
 
 .pieces .big:after,
 .pieces .little:after {
+  border-radius: 50%;
   content: "";
   position: absolute;
-  border-radius: 50%;
 }
 
 .pieces .big:after {
   height: 32px;
-  width: 32px;
-  top: 10px;
   left: 10px;
+  top: 10px;
+  width: 32px;
 }
 
 .pieces .little:after {
-  height: 32px;
-  width: 32px;
-  top: 10px;
-  left: 10px;
+  height: 16px;
+  left: 18px;
+  top: 18px;
+  width: 16px;
+}
+
+.pieces .big.selected:after,
+.pieces .little.selected:after {
+  outline: 3px solid #69b;
+}
+
+.container:not(.piece-selected) .pieces .big,
+.container:not(.piece-selected) .pieces .little {
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.container:not(.piece-selected) .pieces .big:hover,
+.container:not(.piece-selected) .pieces .little:hover {
+  background: #eee;
+}
+
+.container:not(.piece-selected) .pieces .big:active,
+.container:not(.piece-selected) .pieces .little:active {
+  background: #ccc;
 }
 
 .pieces > div:nth-child(1) > div:after {

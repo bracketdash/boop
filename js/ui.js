@@ -64,7 +64,7 @@ function init() {
     });
   });
   // TODO: document.querySelector("")...
-  // TODO: add "piece-selected" to .board
+  // TODO: add "piece-selected" to .container
   const numberControl = document.querySelector(".number-control");
   numberControl.querySelector(".up").addEventListener("click", () => {
     handleDepthChange(minnie, game, 1);
