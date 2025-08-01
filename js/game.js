@@ -41,6 +41,7 @@ class BoopGame {
     const pieceMap = ["o", "O", "t", "T"];
     next.pieces[pieceMap.indexOf(move[2])]--;
     next.board[move[0]][move[1]] = move[2];
+    // TODO: debug pushing logic
     const pushedCells = [
       [-1, -1],
       [-1, 0],

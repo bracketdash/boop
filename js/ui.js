@@ -33,7 +33,7 @@ function handleDepthChange(minnie, game, delta) {
   const newDepth = minnie.setDepth(currDepth + delta);
   if (currDepth !== newDepth) {
     document.querySelector(".depth").innerHTML = newDepth;
-    applySuggestions(minnie, game);
+    updateDOM(minnie, game);
   }
 }
 
