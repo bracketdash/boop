@@ -104,7 +104,7 @@ class BoopGame {
     return next;
   }
 
-  evaluate(state, player) {
+  evaluate(state, player, depthRemaining) {
     const isPlayerOne = player === 1;
     const myLittle = isPlayerOne ? "o" : "t";
     const myBig = isPlayerOne ? "O" : "T";
@@ -127,7 +127,13 @@ class BoopGame {
       numBigsOnBoard === 8 ||
       (numBigsOnBoard > 2 && this._findTriplets(state.board, [myBig]).length)
     ) {
-      points += 10;
+      points += 10000 + depthRemaining;
+    }
+    if (
+      numBigsOnBoard > 2 &&
+      this._findTriplets(state.board, [myBig === "O" ? "T" : "O"]).length
+    ) {
+      points -= 10000 + depthRemaining;
     }
     return points;
   }

@@ -45,9 +45,6 @@ function init() {
     evaluate: game.evaluate.bind(game),
     generateMoves: game.generateMoves,
     isGameOver: game.isGameOver,
-    // TODO: confirm this is right..it actually might need to be dynamic
-    // TODO: if so, we can remove the config option
-    maxMoves: 128,
   });
   let selectedPiece = false;
   document.querySelectorAll(".row").forEach((row, ri) => {
