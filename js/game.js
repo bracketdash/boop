@@ -38,10 +38,31 @@ class BoopGame {
   }
 
   evaluate(state, player) {
-    // TODO: points for number of kittens on board (1 each)
-    // TODO: points for number of cats available (2 each)
-    // TODO: points for number of cats on board (3 each)
-    // TODO: set number of points (10) for 3 cats in a row (i.e. winning) or 8 cats total
+    const isPlayerOne = player === 1;
+    const myLittle = isPlayerOne ? "o" : "t";
+    const myBig = isPlayerOne ? "O" : "T";
+    let numLittlesOnBoard = 0;
+    let numBigsOnBoard = 0;
+    state.board.forEach((row) => {
+      row.forEach((cell) => {
+        if (cell === myLittle) {
+          numLittlesOnBoard++;
+        } else if (cell === myBig) {
+          numBigsOnBoard++;
+        }
+      });
+    });
+    let points =
+      state.pieces[isPlayerOne ? 1 : 3] * 2 +
+      numLittlesOnBoard +
+      numBigsOnBoard * 3;
+    if (
+      numBigsOnBoard === 8 ||
+      (numBigsOnBoard > 2 && this._findTriplets(state.board, myBig).length)
+    ) {
+      points += 10;
+    }
+    return points;
   }
 
   generateMoves(state, player) {
@@ -86,10 +107,11 @@ class BoopGame {
     });
     if (numOs === 8 || numTs === 8) {
       return true;
-    } else if (numOs > 2) {
-      // TODO: find out if there are three "O" in a row (if so, return true)
-    } else if (numTs > 2) {
-      // TODO: find out if there are three "T" in a row (if so, return true)
+    } else if (
+      (numOs > 2 && this._findTriplets(state.board, "O").length) ||
+      (numTs > 2 && this._findTriplets(state.board, "T").length)
+    ) {
+      return true;
     }
     return false;
   }
@@ -115,5 +137,46 @@ class BoopGame {
         JSON.stringify(this.history)
       );
     }
+  }
+
+  _findTriplets(state, piece) {
+    const rows = state.length;
+    const cols = state[0].length;
+    const matches = [];
+    const directions = [
+      [0, 1],
+      [1, 0],
+      [1, 1],
+      [-1, 1],
+    ];
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        if (state[r][c] !== piece) {
+          continue;
+        }
+        for (let [dr, dc] of directions) {
+          const sequence = [[r, c]];
+          for (let i = 1; i < 3; i++) {
+            const nr = r + dr * i;
+            const nc = c + dc * i;
+            if (
+              nr >= 0 &&
+              nr < rows &&
+              nc >= 0 &&
+              nc < cols &&
+              state[nr][nc] === piece
+            ) {
+              sequence.push([nr, nc]);
+            } else {
+              break;
+            }
+          }
+          if (sequence.length === 3) {
+            matches.push(sequence);
+          }
+        }
+      }
+    }
+    return matches;
   }
 }
