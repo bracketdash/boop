@@ -38,7 +38,7 @@ function handleDepthChange(minnie, game, delta) {
 }
 
 function init() {
-  const game = new MancalaGame();
+  const game = new BoopGame();
   const minnie = new MinnieMax({
     applyMove: game.applyMove.bind(game),
     depth: 5,
@@ -59,12 +59,33 @@ function init() {
           return;
         }
         game.pushState(game.applyMove(state, [ri, ci, selectedPiece]));
+        document.querySelector(".container").classList.remove("piece-selected");
+        selectedPiece = false;
         updateDOM(minnie, game);
       });
     });
   });
-  // TODO: document.querySelector("")...
-  // TODO: add "piece-selected" to .container
+  document.querySelectorAll(".pieces > div").forEach((hand, playerIndex) => {
+    hand.querySelectorAll("div").forEach((piece, pieceIndex) => {
+      piece.addEventListener("click", ({ target }) => {
+        const classes = target.classList;
+        if (!classes.contains("big") && !classes.contains("little")) {
+          return;
+        }
+        if (selectedPiece) {
+          document.querySelector(".selected").classList.remove("selected");
+        } else {
+          document.querySelector(".container").classList.add("piece-selected");
+          if (classes.contains("little")) {
+            selectedPiece = playerIndex ? "t" : "o";
+          } else {
+            selectedPiece = playerIndex ? "T" : "O";
+          }
+        }
+        target.classList.add("selected");
+      });
+    });
+  });
   const numberControl = document.querySelector(".number-control");
   numberControl.querySelector(".up").addEventListener("click", () => {
     handleDepthChange(minnie, game, 1);
@@ -108,18 +129,20 @@ function updateDOM(minnie, game) {
   });
   const pieces = document.querySelector(".pieces");
   [0, 1].forEach((playerIndex) => {
-    pieces.children[playerIndex].children.forEach((piece, pieceIndex) => {
-      const classes = piece.classList;
-      classes.remove("little", "big");
-      const littles = state.pieces[2 * playerIndex];
-      if (littles > pieceIndex) {
-        piece.add("little");
-      } else if (littles + state.pieces[2 * playerIndex + 1] > pieceIndex) {
-        piece.add("big");
+    Array.from(pieces.children[playerIndex].children).forEach(
+      (piece, pieceIndex) => {
+        const classes = piece.classList;
+        classes.remove("little", "big", "selected");
+        const littles = state.pieces[2 * playerIndex];
+        if (littles > pieceIndex) {
+          classes.add("little");
+        } else if (littles + state.pieces[2 * playerIndex + 1] > pieceIndex) {
+          classes.add("big");
+        }
       }
-    });
+    );
   });
   applySuggestions(minnie, game);
 }
 
-// TODO: init();
+init();

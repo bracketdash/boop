@@ -120,19 +120,19 @@ body {
   outline: 3px solid #69b;
 }
 
-.container:not(.piece-selected) .pieces .big,
-.container:not(.piece-selected) .pieces .little {
+.pieces .big:not(.selected),
+.pieces .little:not(.selected) {
   border-radius: 6px;
   cursor: pointer;
 }
 
-.container:not(.piece-selected) .pieces .big:hover,
-.container:not(.piece-selected) .pieces .little:hover {
+.pieces .big:not(.selected):hover,
+.pieces .little:not(.selected):hover {
   background: #eee;
 }
 
-.container:not(.piece-selected) .pieces .big:active,
-.container:not(.piece-selected) .pieces .little:active {
+.pieces .big:not(.selected):active,
+.pieces .little:not(.selected):active {
   background: #ccc;
 }
 
