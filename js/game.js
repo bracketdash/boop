@@ -34,13 +34,19 @@ class BoopGame {
   }
 
   applyMove(state, move) {
-    // TODO: place the piece
-    // TODO: checkpoint: if placing this piece results in all 8 of their big pieces on the board, stop here - the game is over!
+    const next = {
+      board: state.board.map((row) => row.slice()),
+      pieces: state.pieces.slice(),
+    };
+    const pieceMap = ["o", "O", "t", "T"];
+    next.pieces[pieceMap.indexOf(move[2])]--;
+    next.board[move[0]][move[1]] = move[2];
     // TODO: push the surrounding little pieces away one space IF the space they'd move into is empty
+    // TODO: push the surrounding big pieces away one space IF the space they'd move into is empty AND the placed piece is also a big piece
     // TODO: if a piece is pushed off the board, add it back to state.pieces
     // TODO: if there are 3 little pieces in a row, convert them all to big pieces and put them back in state.pieces
     // TODO: if there are a mix of big and little pieces in a row, convert the little pieces to big and put them back in state.pieces
-    // TODO: checkpoint: if there are 3 big pieces in a row, leave them be - the game is over!
+    // TODO: if there are 3 big pieces in a row, leave them be - the game is over!
   }
 
   evaluate(state, player) {
@@ -145,9 +151,9 @@ class BoopGame {
     }
   }
 
-  _findTriplets(state, piece, pieceAlt = null) {
-    const rows = state.length;
-    const cols = state[0].length;
+  _findTriplets(board, piece, pieceAlt = null) {
+    const rows = board.length;
+    const cols = board[0].length;
     const matches = [];
     const directions = [
       [0, 1],
@@ -160,7 +166,7 @@ class BoopGame {
     };
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
-        if (!isMatch(state[r][c])) {
+        if (!isMatch(board[r][c])) {
           continue;
         }
         for (let [dr, dc] of directions) {
@@ -173,7 +179,7 @@ class BoopGame {
               nr < rows &&
               nc >= 0 &&
               nc < cols &&
-              isMatch(state[nr][nc])
+              isMatch(board[nr][nc])
             ) {
               sequence.push([nr, nc]);
             } else {

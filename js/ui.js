@@ -13,7 +13,10 @@ function applySuggestions(minnie, game) {
         const [ri, ci, piece] = minnie
           .getScoredMoves(state, player)
           .sort((a, b) => (a.score <= b.score ? 1 : -1))[0].move;
-        rows[ri].children[ci].classList.add("suggested");
+        rows[ri].children[ci].classList.add(
+          "suggested",
+          piece === "o" || piece === "O" ? "one" : "two"
+        );
         document
           .querySelector(
             `.pieces > div:nth-child(${player}) .${
@@ -45,6 +48,8 @@ function init() {
     evaluate: game.evaluate.bind(game),
     generateMoves: game.generateMoves,
     isGameOver: game.isGameOver,
+    // TODO: confirm this is right..it actually might need to be dynamic
+    // TODO: if so, we can remove the config option
     maxMoves: 128,
   });
   let selectedPiece = false;
@@ -107,10 +112,10 @@ function updateDOM(minnie, game) {
   state.board.forEach((row, rowIndex) => {
     row.forEach((cell, cellIndex) => {
       const classes = rows[rowIndex].children[cellIndex].classList;
-      classes.remove("empty");
+      classes.remove("empty", "little", "big", "one", "two");
       switch (cell) {
         case "e":
-          classes.add("empty", "little", "big", "one", "two");
+          classes.add("empty");
           break;
         case "o":
           classes.add("little", "one");
