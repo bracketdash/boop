@@ -34,7 +34,13 @@ class BoopGame {
   }
 
   applyMove(state, move) {
-    // TODO
+    // TODO: place the piece
+    // TODO: checkpoint: if placing this piece results in all 8 of their big pieces on the board, stop here - the game is over!
+    // TODO: push the surrounding little pieces away one space IF the space they'd move into is empty
+    // TODO: if a piece is pushed off the board, add it back to state.pieces
+    // TODO: if there are 3 little pieces in a row, convert them all to big pieces and put them back in state.pieces
+    // TODO: if there are a mix of big and little pieces in a row, convert the little pieces to big and put them back in state.pieces
+    // TODO: checkpoint: if there are 3 big pieces in a row, leave them be - the game is over!
   }
 
   evaluate(state, player) {
@@ -139,7 +145,7 @@ class BoopGame {
     }
   }
 
-  _findTriplets(state, piece) {
+  _findTriplets(state, piece, pieceAlt = null) {
     const rows = state.length;
     const cols = state[0].length;
     const matches = [];
@@ -149,9 +155,12 @@ class BoopGame {
       [1, 1],
       [-1, 1],
     ];
+    const isMatch = (cell) => {
+      return cell === piece || (pieceAlt && cell === pieceAlt);
+    };
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
-        if (state[r][c] !== piece) {
+        if (!isMatch(state[r][c])) {
           continue;
         }
         for (let [dr, dc] of directions) {
@@ -164,7 +173,7 @@ class BoopGame {
               nr < rows &&
               nc >= 0 &&
               nc < cols &&
-              state[nr][nc] === piece
+              isMatch(state[nr][nc])
             ) {
               sequence.push([nr, nc]);
             } else {
