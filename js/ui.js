@@ -41,11 +41,11 @@ function init() {
   const game = new BoopGame();
   const minnie = new MinnieMax({
     applyMove: game.applyMove.bind(game),
-    depth: 5,
+    depth: 4,
     evaluate: game.evaluate.bind(game),
     generateMoves: game.generateMoves,
     isGameOver: game.isGameOver,
-    maxMoves: 8,
+    maxMoves: 128,
   });
   let selectedPiece = false;
   document.querySelectorAll(".row").forEach((row, ri) => {
