@@ -82,7 +82,43 @@ function init() {
 
 function updateDOM(minnie, game) {
   const state = game.getState();
-  // TODO
+  const rows = document.querySelectorAll(".row");
+  state.board.forEach((row, rowIndex) => {
+    row.forEach((cell, cellIndex) => {
+      const classes = rows[rowIndex].children[cellIndex].classList;
+      classes.remove("empty");
+      switch (cell) {
+        case "e":
+          classes.add("empty", "little", "big", "one", "two");
+          break;
+        case "o":
+          classes.add("little", "one");
+          break;
+        case "t":
+          classes.add("little", "two");
+          break;
+        case "O":
+          classes.add("big", "one");
+          break;
+        case "T":
+          classes.add("big", "two");
+          break;
+      }
+    });
+  });
+  const pieces = document.querySelector(".pieces");
+  [0, 1].forEach((playerIndex) => {
+    pieces.children[playerIndex].children.forEach((piece, pieceIndex) => {
+      const classes = piece.classList;
+      classes.remove("little", "big");
+      const littles = state.pieces[2 * playerIndex];
+      if (littles > pieceIndex) {
+        piece.add("little");
+      } else if (littles + state.pieces[2 * playerIndex + 1] > pieceIndex) {
+        piece.add("big");
+      }
+    });
+  });
   applySuggestions(minnie, game);
 }
 

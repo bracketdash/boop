@@ -4,7 +4,15 @@ class BoopGame {
   constructor() {
     this.history = [
       {
-        // TODO
+        board: [
+          ["e", "e", "e", "e", "e", "e"],
+          ["e", "e", "e", "e", "e", "e"],
+          ["e", "e", "e", "e", "e", "e"],
+          ["e", "e", "e", "e", "e", "e"],
+          ["e", "e", "e", "e", "e", "e"],
+          ["e", "e", "e", "e", "e", "e"],
+        ],
+        pieces: [8, 0, 8, 0],
       },
     ];
     const storedHistory = localStorage?.getItem(HISTORY_LOCALSTORAGE_KEY);
