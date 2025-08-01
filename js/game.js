@@ -41,13 +41,31 @@ class BoopGame {
     // TODO: points for number of kittens on board (1 each)
     // TODO: points for number of cats available (2 each)
     // TODO: points for number of cats on board (3 each)
-    // TODO: set number of points (10) for 3 cats in a row (i.e. winning)
+    // TODO: set number of points (10) for 3 cats in a row (i.e. winning) or 8 cats total
   }
 
   generateMoves(state, player) {
-    // TODO: if player has at least one each of big and little pieces, there should be 2 X (empty cells on board) moves
-    // TODO: if player has just little or just big pieces, the number of moves should be equal to the number of empty cells on the board
-    // TODO: if player has no pieces available, return []; (this should skip their turn)
+    const moves = [];
+    const pieces = [];
+    const isPlayerOne = player === 1;
+    if (state.pieces[isPlayerOne ? 0 : 2] > 0) {
+      pieces.push(isPlayerOne ? "o" : "t");
+    }
+    if (state.pieces[isPlayerOne ? 1 : 3] > 0) {
+      pieces.push(isPlayerOne ? "O" : "T");
+    }
+    if (pieces.length) {
+      pieces.forEach((piece) => {
+        state.board.forEach((row, rowIndex) => {
+          row.forEach((cell, cellIndex) => {
+            if (cell === "e") {
+              moves.push([rowIndex, cellIndex, piece]);
+            }
+          });
+        });
+      });
+    }
+    return moves;
   }
 
   getState() {
@@ -55,9 +73,25 @@ class BoopGame {
   }
 
   isGameOver(state) {
-    // TODO: return true if there are three of the same "O" or "T" in a row (vertical, horizontal, or diagonal)
-    // TODO: return true if there are 8 "O" or 8 "T" total on the board
-    // TODO: otherwise, return false
+    let numOs = 0;
+    let numTs = 0;
+    state.board.forEach((row) => {
+      row.forEach((cell) => {
+        if (cell === "O") {
+          numOs++;
+        } else if (cell === "T") {
+          numTs++;
+        }
+      });
+    });
+    if (numOs === 8 || numTs === 8) {
+      return true;
+    } else if (numOs > 2) {
+      // TODO: find out if there are three "O" in a row (if so, return true)
+    } else if (numTs > 2) {
+      // TODO: find out if there are three "T" in a row (if so, return true)
+    }
+    return false;
   }
 
   pushState(state) {
