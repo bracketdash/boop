@@ -99,8 +99,6 @@ body {
   background: #f93;
 }
 
-/* PIECES */
-
 .piece-selected .row > .empty {
   cursor: pointer;
 }
@@ -112,6 +110,8 @@ body {
 .piece-selected .row > .empty:active {
   background: #ccc;
 }
+
+/* PIECES */
 
 .pieces {
   align-items: center;
@@ -131,8 +131,7 @@ body {
   flex-direction: row-reverse;
 }
 
-.pieces .big,
-.pieces .little {
+.pieces > div > div {
   height: 52px;
   position: relative;
   width: 52px;
