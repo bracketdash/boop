@@ -41,12 +41,66 @@ class BoopGame {
     const pieceMap = ["o", "O", "t", "T"];
     next.pieces[pieceMap.indexOf(move[2])]--;
     next.board[move[0]][move[1]] = move[2];
-    // TODO: push the surrounding little pieces away one space IF the space they'd move into is empty
-    // TODO: push the surrounding big pieces away one space IF the space they'd move into is empty AND the placed piece is also a big piece
-    // TODO: if a piece is pushed off the board, add it back to state.pieces
-    // TODO: if there are 3 little pieces in a row, convert them all to big pieces and put them back in state.pieces
-    // TODO: if there are a mix of big and little pieces in a row, convert the little pieces to big and put them back in state.pieces
-    // TODO: if there are 3 big pieces in a row, leave them be - the game is over!
+    const pushedCells = [
+      [-1, -1],
+      [-1, 0],
+      [-1, 1],
+      [0, -1],
+      [0, 1],
+      [1, -1],
+      [1, 0],
+      [1, 1],
+    ];
+    pushedCells.forEach(([rowDelta, cellDelta]) => {
+      const startingRow = move[0] + rowDelta;
+      const startingCell = move[1] + cellDelta;
+      if (
+        startingRow < 0 ||
+        startingRow > 5 ||
+        startingCell < 0 ||
+        startingCell > 5
+      ) {
+        return;
+      }
+      const targetCell = next.board[startingRow][startingRow];
+      if (
+        targetCell === "e" ||
+        !(
+          move[2] === "O" ||
+          move[2] === "T" ||
+          targetCell === "o" ||
+          targetCell === "t"
+        )
+      ) {
+        return;
+      }
+      next.board[startingRow][startingRow] = "e";
+      const endingRow = startingRow + rowDelta;
+      const endingCell = startingCell + cellDelta;
+      if (endingRow < 0 || endingRow > 5 || endingCell < 0 || endingCell > 5) {
+        next.pieces[pieceMap.indexOf(targetCell)]++;
+      } else {
+        next.board[startingRow][startingRow] = targetCell;
+      }
+    });
+    const triplets = [
+      ...this._findTriplets(next.board, ["o", "O"]),
+      ...this._findTriplets(next.board, ["t", "T"]),
+    ];
+    if (!triplets.length) {
+      return next;
+    }
+    if (
+      !triplets.some((triplet) =>
+        triplet.every((member) => member.p === "O" || member.p === "T")
+      )
+    ) {
+      triplets[0].forEach(([r, c, p]) => {
+        state.board[r][c] = "e";
+        next.pieces[pieceMap.indexOf(p.toUpperCase())]++;
+      });
+    }
+    return next;
   }
 
   evaluate(state, player) {
@@ -70,7 +124,7 @@ class BoopGame {
       numBigsOnBoard * 3;
     if (
       numBigsOnBoard === 8 ||
-      (numBigsOnBoard > 2 && this._findTriplets(state.board, myBig).length)
+      (numBigsOnBoard > 2 && this._findTriplets(state.board, [myBig]).length)
     ) {
       points += 10;
     }
@@ -120,8 +174,8 @@ class BoopGame {
     if (numOs === 8 || numTs === 8) {
       return true;
     } else if (
-      (numOs > 2 && this._findTriplets(state.board, "O").length) ||
-      (numTs > 2 && this._findTriplets(state.board, "T").length)
+      (numOs > 2 && this._findTriplets(state.board, ["O"]).length) ||
+      (numTs > 2 && this._findTriplets(state.board, ["T"]).length)
     ) {
       return true;
     }
@@ -151,7 +205,7 @@ class BoopGame {
     }
   }
 
-  _findTriplets(board, piece, pieceAlt = null) {
+  _findTriplets(board, pieces) {
     const rows = board.length;
     const cols = board[0].length;
     const matches = [];
@@ -161,16 +215,14 @@ class BoopGame {
       [1, 1],
       [-1, 1],
     ];
-    const isMatch = (cell) => {
-      return cell === piece || (pieceAlt && cell === pieceAlt);
-    };
+    const isMatch = (cell) => pieces.includes(cell);
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
         if (!isMatch(board[r][c])) {
           continue;
         }
         for (let [dr, dc] of directions) {
-          const sequence = [[r, c]];
+          const sequence = [[r, c, board[r][c]]];
           for (let i = 1; i < 3; i++) {
             const nr = r + dr * i;
             const nc = c + dc * i;
@@ -181,7 +233,7 @@ class BoopGame {
               nc < cols &&
               isMatch(board[nr][nc])
             ) {
-              sequence.push([nr, nc]);
+              sequence.push([nr, nc, board[nr][nc]]);
             } else {
               break;
             }

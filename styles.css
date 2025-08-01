@@ -54,8 +54,52 @@ body {
   background: #ddd;
   border: 1px solid #ccc;
   height: 52px;
+  position: relative;
   width: 52px;
 }
+
+.row .suggested.one {
+  box-shadow: inset -3px 3px #8d2;
+}
+
+.row .suggested.two {
+  box-shadow: inset 3px -3px #f93;
+}
+
+.row .suggested.one.two {
+  box-shadow: inset -3px 3px #8d2, inset 3px -3px #f93;
+}
+
+.row .big:after,
+.row .little:after {
+  border-radius: 50%;
+  content: "";
+  position: absolute;
+}
+
+.row .big:after {
+  height: 32px;
+  left: 10px;
+  top: 10px;
+  width: 32px;
+}
+
+.row .little:after {
+  height: 16px;
+  left: 18px;
+  top: 18px;
+  width: 16px;
+}
+
+.row .one:after {
+  background: #8d2;
+}
+
+.row .two:after {
+  background: #f93;
+}
+
+/* PIECES */
 
 .piece-selected .row > .empty {
   cursor: pointer;
@@ -115,6 +159,11 @@ body {
   width: 16px;
 }
 
+.pieces .big.suggested:after,
+.pieces .little.suggested:after {
+  box-shadow: inset -4px 3px #58a;
+}
+
 .pieces .big.selected:after,
 .pieces .little.selected:after {
   outline: 3px solid #69b;
@@ -143,8 +192,6 @@ body {
 .pieces > div:nth-child(2) > div:after {
   background: #f93;
 }
-
-/* TODO: .suggested stuff */
 
 /* CONTROLS */
 

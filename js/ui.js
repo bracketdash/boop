@@ -1,8 +1,5 @@
 function applySuggestions(minnie, game) {
   const thinker = document.querySelector(".thinker").classList;
-  document
-    .querySelectorAll(".suggested")
-    .forEach((el) => el.classList.remove("suggested"));
   thinker.add("active");
   console.time("thinking");
   requestAnimationFrame(() => {
@@ -44,7 +41,7 @@ function init() {
   const game = new BoopGame();
   const minnie = new MinnieMax({
     applyMove: game.applyMove.bind(game),
-    depth: 4,
+    depth: 3,
     evaluate: game.evaluate.bind(game),
     generateMoves: game.generateMoves,
     isGameOver: game.isGameOver,
@@ -112,7 +109,7 @@ function updateDOM(minnie, game) {
   state.board.forEach((row, rowIndex) => {
     row.forEach((cell, cellIndex) => {
       const classes = rows[rowIndex].children[cellIndex].classList;
-      classes.remove("empty", "little", "big", "one", "two");
+      classes.remove("empty", "little", "big", "one", "two", "suggested");
       switch (cell) {
         case "e":
           classes.add("empty");
@@ -137,7 +134,7 @@ function updateDOM(minnie, game) {
     Array.from(pieces.children[playerIndex].children).forEach(
       (piece, pieceIndex) => {
         const classes = piece.classList;
-        classes.remove("little", "big", "selected");
+        classes.remove("little", "big", "selected", "suggested");
         const littles = state.pieces[2 * playerIndex];
         if (littles > pieceIndex) {
           classes.add("little");
