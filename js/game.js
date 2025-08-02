@@ -97,7 +97,7 @@ class BoopGame {
       )
     ) {
       triplets[0].forEach(([r, c, p]) => {
-        state.board[r][c] = "e";
+        next.board[r][c] = "e";
         next.pieces[pieceMap.indexOf(p.toUpperCase())]++;
       });
     }
