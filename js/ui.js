@@ -44,7 +44,7 @@ function init() {
     depth: 3,
     evaluate: game.evaluate.bind(game),
     generateMoves: game.generateMoves,
-    isGameOver: game.isGameOver,
+    isGameOver: game.isGameOver.bind(game),
   });
   let selectedPiece = false;
   document.querySelectorAll(".row").forEach((row, ri) => {
