@@ -56,16 +56,10 @@ body {
   width: 52px;
 }
 
-.row .suggested.one {
-  box-shadow: inset -3px 3px #8d2;
-}
-
-.row .suggested.two {
-  box-shadow: inset 3px -3px #f93;
-}
-
-.row .suggested.one.two {
-  box-shadow: inset -3px 3px #8d2, inset 3px -3px #f93;
+.row .suggested {
+  border: 2px solid #58a;
+  height: 50px;
+  width: 50px;
 }
 
 .row .big:after,
@@ -128,6 +122,7 @@ body {
 }
 
 .pieces > div > div {
+  border-radius: 6px;
   height: 52px;
   position: relative;
   width: 52px;
@@ -154,9 +149,21 @@ body {
   width: 16px;
 }
 
-.pieces .big.suggested:after,
+.pieces .big.suggested,
+.pieces .little.suggested {
+  border: 2px solid #58a;
+  height: 48px;
+  width: 48px;
+}
+
+.pieces .big.suggested:after {
+  left: 8px;
+  top: 8px;
+}
+
 .pieces .little.suggested:after {
-  box-shadow: inset -4px 3px #58a;
+  left: 16px;
+  top: 16px;
 }
 
 .pieces .big.selected:after,
@@ -166,7 +173,6 @@ body {
 
 .pieces .big:not(.selected),
 .pieces .little:not(.selected) {
-  border-radius: 6px;
   cursor: pointer;
 }
 

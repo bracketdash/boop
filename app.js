@@ -129,14 +129,14 @@ new MinnieMax({
         next.board[endingRow][endingCell] = targetCell;
       }
     });
+    const nextPlayer = player === 1 ? 2 : 1;
     const triplets = [
       ...findTriplets(next.board, ["o", "O"]),
       ...findTriplets(next.board, ["t", "T"]),
     ];
     if (!triplets.length) {
-      return next;
+      return { state: next, player: nextPlayer };
     }
-    // TODO: we are somehow losing pieces somewhere around here
     if (
       !triplets.some((triplet) =>
         triplet.every((member) => member.p === "O" || member.p === "T")
@@ -147,7 +147,7 @@ new MinnieMax({
         next.pieces[pieceMap.indexOf(p.toUpperCase())]++;
       });
     }
-    return { state: next, player: player === 1 ? 2 : 1 };
+    return { state: next, player: nextPlayer };
   },
   getStateScore: ({ state, player, movesRemaining }) => {
     const isPlayerOne = player === 1;
@@ -205,8 +205,7 @@ new MinnieMax({
     return false;
   },
   onChange: ({ minnie }) => {
-    // TODO: adapt to minniemax2
-    const state = game.getState();
+    const { state, player } = minnie.getState();
     const rows = document.querySelectorAll(".row");
     state.board.forEach((row, rowIndex) => {
       row.forEach((cell, cellIndex) => {
@@ -246,36 +245,19 @@ new MinnieMax({
         }
       );
     });
-    const thinker = document.querySelector(".thinker").classList;
-    thinker.add("active");
-    console.time("thinking");
-    requestAnimationFrame(() => {
-      setTimeout(() => {
-        const rows = Array.from(document.querySelectorAll(".row"));
-        const state = game.getState();
-        [1, 2].forEach((player) => {
-          const [ri, ci, piece] = minnie
-            .getScoredMoves(state, player)
-            .sort((a, b) => (a.score <= b.score ? 1 : -1))[0].move;
-          rows[ri].children[ci].classList.add(
-            "suggested",
-            piece === "o" || piece === "O" ? "one" : "two"
-          );
-          document
-            .querySelector(
-              `.pieces > div:nth-child(${player}) .${
-                piece === "O" || piece === "T" ? "big" : "little"
-              }`
-            )
-            .classList.add("suggested");
-        });
-        thinker.remove("active");
-        console.timeEnd("thinking");
-      }, 1);
+    minnie.getScoredMoves(state, player).then((scoredMoves) => {
+      const [ri, ci, piece] = scoredMoves[0].move;
+      rows[ri].children[ci].classList.add("suggested");
+      document
+        .querySelector(
+          `.pieces > div:nth-child(${player}) .${
+            piece === "O" || piece === "T" ? "big" : "little"
+          }`
+        )
+        .classList.add("suggested");
     });
   },
   onReady: ({ minnie }) => {
-    // TODO: adapt to minniemax2
     let selectedPiece = false;
     document.querySelectorAll(".row").forEach((row, ri) => {
       Array.from(row.children).forEach((cell, ci) => {
@@ -283,16 +265,21 @@ new MinnieMax({
           if (!selectedPiece || !cell.classList.contains("empty")) {
             return;
           }
-          const state = game.getState();
-          if (game.isGameOver(state)) {
+          const { state, player } = minnie.getState();
+          if (minnie.isGameOver({ state })) {
             return;
           }
-          game.pushState(game.applyMove(state, [ri, ci, selectedPiece]));
+          const { state: nextState, player: nextPlayer } = minnie.getNextState({
+            state,
+            player,
+            move: [ri, ci, selectedPiece],
+          });
+          minnie.pushState(nextState, nextPlayer);
           document
             .querySelector(".container")
             .classList.remove("piece-selected");
           selectedPiece = false;
-          updateDOM(minnie, game);
+          minnie.onChange({ minnie });
         });
       });
     });
@@ -319,6 +306,6 @@ new MinnieMax({
         });
       });
     });
-    updateDOM(minnie, game);
+    minnie.onChange({ minnie });
   },
 });
